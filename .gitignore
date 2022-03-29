@@ -1,6 +1,6 @@
 builds
-src/*.png
-src/*.gif
+*.png
+*.gif
 src/bin/
 src/obj/
 .vscode
