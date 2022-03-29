@@ -7,9 +7,9 @@ Run the program and paste in a URL or Discord User ID, press enter, type a path 
 ## Examples
 
 <p align="center">
-  <img width="300" src="https://user-images.githubusercontent.com/93228501/160682032-db6bea3b-cd57-4482-a972-c01f31d2dac7.png"/>
-  <img width="300" src="https://user-images.githubusercontent.com/93228501/160682334-92c10305-749d-449c-924b-86ee0de9dc00.png"/>
-  <img width="300" src="https://user-images.githubusercontent.com/93228501/160683085-0ec3f961-faa8-458a-b986-328c442a15c5.png"/>
+  <img width="300" align="center" src="https://user-images.githubusercontent.com/93228501/160682032-db6bea3b-cd57-4482-a972-c01f31d2dac7.png"/>
+  <img width="300" align="center" src="https://user-images.githubusercontent.com/93228501/160682334-92c10305-749d-449c-924b-86ee0de9dc00.png"/>
+  <img width="300" align="center" src="https://user-images.githubusercontent.com/93228501/160683085-0ec3f961-faa8-458a-b986-328c442a15c5.png"/>
 </p>
 <p align="">
 </p>
