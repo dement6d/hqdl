@@ -1,0 +1,6 @@
+src/*.png
+src/*.gif
+src/bin/
+src/obj/
+.vscode
+src/.vscode
