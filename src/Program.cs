@@ -44,7 +44,12 @@ static async Task HandleDiscord(long userId, string folderPath) {
     await page.ClickAsync("button.form-control");
     await page.ClickAsync(".frc-button");
     
-    var pfpSrc = await page.Locator("img >> nth=0").GetAttributeAsync("src");
+    string? pfpSrc = null;
+    try {
+        pfpSrc = await page.Locator("img >> nth=0").GetAttributeAsync("src"); } catch {
+        Output.Error("Failed to get User profile, keep in mind that Server IDs aren't supported");
+        Environment.Exit(-1);
+    }
     var pfpDownloadPath = GetDownloadPath(folderPath, "discord_pfp.png");
     Output.Inform("Downloading Discord profile picture PNG");
     await FileSystem.Download(pfpSrc.Replace("?size=1024", "?size=2048"), pfpDownloadPath);
