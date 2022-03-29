@@ -3,6 +3,9 @@ using IO;
 using FS;
 using System.Text.Json;
 
+// clear console
+Console.Clear();
+
 // get url
 string? url = "";
 while (string.IsNullOrEmpty(url.Trim())) url = Input.GetInput("URL / Discord User ID");
@@ -12,22 +15,33 @@ string? folderPath = "";
 // check if default download path exists
 if (File.Exists("config.txt")) folderPath = File.ReadAllLinesAsync("config.txt").Result[0];
 else {
-    Output.Inform("You can set a default download location by creating a config.txt file in the same location as the executable and writing the download path on the first line");
+    Output.Inform("Set a default download path by creating a 'config.txt' file in the same location as the executable and writing the path on the first line");
     folderPath = Input.GetInput($"Folder to save in (Leave empty to save in {Environment.CurrentDirectory})");
 }
 
+// fix up the path
 var downloadFolder = string.IsNullOrEmpty(folderPath.Trim()) ? "" : folderPath + (folderPath.EndsWith(Path.DirectorySeparatorChar) ? "" : Path.DirectorySeparatorChar);
 if (downloadFolder.StartsWith("~/")) downloadFolder = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + downloadFolder.Substring(1);
+downloadFolder = downloadFolder.Replace('/', Path.DirectorySeparatorChar);
+downloadFolder = downloadFolder.Replace('\\', Path.DirectorySeparatorChar);
+if (downloadFolder.ToLower().StartsWith("desktop" + Path.DirectorySeparatorChar)) {
+    downloadFolder = downloadFolder.Replace("desktop", Environment.GetFolderPath(Environment.SpecialFolder.Desktop));
+    Output.Inform("Download path set to " + downloadFolder);
+}
 if (!string.IsNullOrEmpty(downloadFolder) && downloadFolder != "desktop") Directory.CreateDirectory(downloadFolder);
 
 // soundcloud
-if (url.Contains("soundcloud.com")) await HandleSoundcloud(url, folderPath);
+if (url.Contains("soundcloud.com")) await HandleSoundcloud(url, downloadFolder);
 // youtube
-else if (url.Contains("youtube.com") || url.Contains("youtu.be")) await HandleYoutube(url, folderPath);
+else if (url.Contains("youtube.com") || url.Contains("youtu.be")) await HandleYoutube(url, downloadFolder);
 // discord pfp
-else if (url.Trim().Length == 18 && long.TryParse(url.Trim(), out long userId)) await HandleDiscord(userId, folderPath);
+else if (url.Trim().Length == 18 && long.TryParse(url.Trim(), out long userId)) await HandleDiscord(userId, downloadFolder);
 // unsupported
 else Output.Inform("Website not supported");
+
+// dont exit instantly
+Output.Inform("Press any key to exit");
+Console.ReadKey();
 
 static async Task HandleDiscord(long userId, string folderPath) {
     // go to url
@@ -66,6 +80,7 @@ static async Task HandleDiscord(long userId, string folderPath) {
 
     await page.PauseAsync();
 }
+
 static async Task HandleYoutube(string url, string folderPath) {
 
     // go to url
@@ -106,6 +121,7 @@ static async Task HandleYoutube(string url, string folderPath) {
     }
     else Output.Inform("Unrecognized link, only video and channel links are supported");
 }
+
 static async Task HandleSoundcloud(string url, string folderPath) {
 
     // go to url

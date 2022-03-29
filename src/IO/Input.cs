@@ -4,7 +4,7 @@ namespace IO
     {
         public static string? GetInput(string details) {
             Console.ForegroundColor = ConsoleColor.White;
-            Console.Write("Input ");
+            Console.Write("\nInput ");
             Console.ForegroundColor = ConsoleColor.Blue;
             Console.WriteLine(details);
             Console.ForegroundColor = ConsoleColor.White;
