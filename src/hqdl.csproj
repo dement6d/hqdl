@@ -3,10 +3,11 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net6.0</TargetFramework>
-    <RootNamespace>original_img_dl</RootNamespace>
+    <RootNamespace>hqdl</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <PublishTrimmed>true</PublishTrimmed>
+    <PlaywrightPlatform>all</PlaywrightPlatform>
   </PropertyGroup>
 
   <ItemGroup>
