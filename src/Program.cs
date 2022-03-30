@@ -5,15 +5,15 @@ Initialize();
 
 // get url
 string? url = "";
-while (string.IsNullOrEmpty(url.Trim())) url = Input.GetInput("URL / Discord User ID");
+url = Input.GetUrl();
 
 // get download path
 string? folderPath = "";
 // check if default download path exists
 if (File.Exists("config.txt")) folderPath = File.ReadAllLinesAsync("config.txt").Result[0];
 else {
-    Output.Inform("Set a default download path by creating a 'config.txt' file in the same location as the executable and writing the path on the first line");
-    folderPath = Input.GetInput($"Folder to save in {SetText.Gray}(Leave empty to save in {Environment.CurrentDirectory})");
+    folderPath = Input.GetInput($"Folder to save in", new[] {   new Input.AdditionalInfo{ info = "Set a default download path by creating a 'config.txt' file in the same location as the executable and writing the path on the first line", error = false },
+                                                                new Input.AdditionalInfo { info = $"Leave empty to save in '{Environment.CurrentDirectory}'", error = false }});
 }
 
 // fix up the path
@@ -27,21 +27,34 @@ if (downloadFolder.ToLower().StartsWith("desktop" + Path.DirectorySeparatorChar)
 }
 if (!string.IsNullOrEmpty(downloadFolder) && downloadFolder != "desktop") Directory.CreateDirectory(downloadFolder);
 
-// soundcloud
-if (url.Contains("soundcloud.com")) await Handlers.HandleSoundcloud(url, downloadFolder);
-// youtube
-else if (url.Contains("youtube.com") || url.Contains("youtu.be")) await Handlers.HandleYoutube(url, downloadFolder);
-// discord pfp
-else if (url.Trim().Length == 18 && long.TryParse(url.Trim(), out long userId)) await Handlers.HandleDiscord(userId, downloadFolder);
-// unsupported
-else Output.Inform("Website not supported");
+// set window title
+Console.Title = "High Quality Downloader - Working";
+
+// separate urls
+List<string> urls = urls = url.Split(" & ", StringSplitOptions.RemoveEmptyEntries).ToList();
+foreach (string entry in urls) {
+    if (urls.Count > 1) Output.Inform($"Handling entry '{entry}'");
+    // soundcloud
+    if (entry.Contains("soundcloud.com")) await Handlers.HandleSoundcloud(entry, downloadFolder);
+    // youtube
+    else if (entry.Contains("youtube.com") || entry.Contains("youtu.be")) await Handlers.HandleYoutube(entry, downloadFolder);
+    // discord pfp
+    else if (entry.Trim().Length == 18 && long.TryParse(entry.Trim(), out long userId)) await Handlers.HandleDiscord(userId, downloadFolder);
+    // unsupported
+    else Output.Inform("Website not supported");
+}
 
 // dont exit instantly
+Console.Title = "High Quality Downloader - Finished";
 Output.Inform("Press any key to exit");
 Console.ReadKey();
 SetText.DisplayCursor(true);
 
 static void Initialize() {
+
+    // set window title
+    Console.Title = "High Quality Downloader";
+
     // clear console
     Console.Clear();
 

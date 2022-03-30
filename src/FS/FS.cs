@@ -12,6 +12,7 @@ namespace FS
             }
             catch {
                 IO.Output.Error("Failed to download");
+                try { File.Delete(path); } catch {}
                 return false;
             }
             return true;

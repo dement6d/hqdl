@@ -9,9 +9,7 @@ namespace Main
         public static async Task HandleDiscord(long userId, string folderPath) {
             // go to url
             using var playwright = await Playwright.CreateAsync();
-            await using var browser = await playwright.Firefox.LaunchAsync(new BrowserTypeLaunchOptions {
-                Headless = true
-            });
+            await using var browser = await playwright.Chromium.LaunchAsync( new BrowserTypeLaunchOptions { Headless = true });
             var page = await browser.NewPageAsync();
             await page.GotoAsync("https://discord.id", new PageGotoOptions{
                 WaitUntil = WaitUntilState.NetworkIdle
@@ -23,7 +21,15 @@ namespace Main
             await page.ClickAsync(".frc-button");
             
             // get username
-            var username = await page.Locator("div.col-md-4:nth-child(2) > p:nth-child(3) > span:nth-child(3) > span:nth-child(1)").TextContentAsync();
+            string? username = null;
+            try { username = await page.Locator("div.col-md-4:nth-child(2) > p:nth-child(3) > span:nth-child(3) > span:nth-child(1)").TextContentAsync(new LocatorTextContentOptions {
+                Timeout = 3000
+            }); }
+            catch { 
+                try { username = await page.Locator("div.col-md-4.withdarker > p:nth-child(2) > span.resulth > span").TextContentAsync(new LocatorTextContentOptions {
+                Timeout = 3000
+            }); }
+                catch { username = "unknown"; } }
 
             // get pfp gif and png
             string? pfpSrc = null;
@@ -59,8 +65,8 @@ namespace Main
 
             // go to url
             using var playwright = await Playwright.CreateAsync();
-            await using var browser = await playwright.Firefox.LaunchAsync(new BrowserTypeLaunchOptions {
-                Headless = true
+            await using var browser = await playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions {
+                IgnoreDefaultArgs = new string[] {"--mute-audio", "--user-gesture-required"}
             });
             var page = await browser.NewPageAsync();
             await page.GotoAsync(url, new PageGotoOptions{
@@ -68,7 +74,7 @@ namespace Main
             });
             
             // update link
-            url = page.Url;
+            url = page.Url.Replace("&feature=youtu.be", "");
 
             // check if profile page or video
             if (url.Contains("watch?v=")) {
@@ -111,7 +117,7 @@ namespace Main
 
             // go to url
             using var playwright = await Playwright.CreateAsync();
-            await using var browser = await playwright.Firefox.LaunchAsync(new BrowserTypeLaunchOptions {
+            await using var browser = await playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions {
                 Headless = true
             });
             var page = await browser.NewPageAsync();
