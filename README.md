@@ -10,7 +10,7 @@
 
 
 
-## How to use
+# How to use
 
 Run the program and paste in a URL or Discord User ID, press enter
 
@@ -18,3 +18,11 @@ If you didn't set a default download path by creating a 'config.txt' file in the
 
 ### Helpful tip
 Use 'desktop' at the beginning of your download path if you want the items to be downloaded to your desktop or use 'desktop/folder' to have them downloaded inside a folder on your desktop. If the folder doesn't exist, it will be created.
+
+
+# How to build
+
+- Install .NET 6.0
+- `cd src`
+- `dotnet add package Microsoft.Playwright`
+- `dotnet run`
