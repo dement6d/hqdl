@@ -33,7 +33,7 @@ Console.Title = "High Quality Downloader - Working";
 // separate urls
 List<string> urls = urls = url.Split(" & ", StringSplitOptions.RemoveEmptyEntries).ToList();
 foreach (string entry in urls) {
-    if (urls.Count > 1) Output.Inform($"Handling entry '{entry}'");
+    if (urls.Count > 1) Output.Inform($"Handling entry '{SetText.Blue}{entry}{SetText.ResetAll}'");
     // soundcloud
     if (entry.Contains("soundcloud.com")) await Handlers.HandleSoundcloud(entry, downloadFolder);
     // youtube
