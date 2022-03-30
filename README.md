@@ -2,8 +2,10 @@
 <p align="center">Simple and easy to use tool for downloading original quality images from various social medias</p>
 
 <p align="center">
-  <img height="200" align="center" src="https://user-images.githubusercontent.com/93228501/160738873-692fa6af-d923-4d1b-871c-33787a7f29ec.png"/>
-  <img height="200" align="center" src="https://user-images.githubusercontent.com/93228501/160738270-edbff342-7b44-450d-afc4-f3513e7dfd85.png"/>
+  <img width="400" align="center" src="https://user-images.githubusercontent.com/93228501/160738873-692fa6af-d923-4d1b-871c-33787a7f29ec.png"/>
+</p>
+<p align="center">
+  <img width="400" align="center" src="https://user-images.githubusercontent.com/93228501/160738270-edbff342-7b44-450d-afc4-f3513e7dfd85.png"/>
 </p>
 
 <p align="center"><a href="https://github.com/microsoft/playwright-dotnet"><img src="https://img.shields.io/badge/powered%20by-playwright-0077a3"/></a></p>
