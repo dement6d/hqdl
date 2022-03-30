@@ -17,35 +17,42 @@ namespace Main
                 WaitUntil = WaitUntilState.NetworkIdle
             });
 
+            // get user profile
             await page.TypeAsync("#inputid", userId.ToString());
             await page.ClickAsync("button.form-control");
             await page.ClickAsync(".frc-button");
             
+            // get username
+            var username = await page.Locator("div.col-md-4:nth-child(2) > p:nth-child(3) > span:nth-child(3) > span:nth-child(1)").TextContentAsync();
+
+            // get pfp gif and png
             string? pfpSrc = null;
             try { pfpSrc = await page.Locator("img >> nth=0").GetAttributeAsync("src"); }
             catch {
                 Output.Error("Failed to get User profile, keep in mind that Server IDs aren't supported");
                 return;
             }
-            var pfpDownloadPath = GetDownloadPath(folderPath, "discord_pfp.png");
-            Output.Inform("Downloading Discord profile picture PNG");
+            var pfpDownloadPath = GetDownloadPath(folderPath, $"{username} pfp.png");
+            Output.Inform($"Downloading {username}'s profile picture (PNG)");
             await FileSystem.Download(pfpSrc.Replace("?size=1024", "?size=2048"), pfpDownloadPath);
-            Output.Inform("Downloading Discord profile picture GIF");
+            Output.Inform($"Downloading {username}'s profile picture (GIF)");
             await FileSystem.Download(pfpSrc.Replace("?size=1024", "?size=2048").Replace(".png", ".gif"), pfpDownloadPath.Replace(".png", ".gif"));
 
+            // get banner gif and png
             string? bannerSrc = null;
             try { bannerSrc = await page.QuerySelectorAsync("img[alt=\"Banner\"]").Result.GetAttributeAsync("src"); }
             catch {
                 Output.Error("User doesn't have a banner");
                 return;
             }
-            var bannerDownloadPath = GetDownloadPath(folderPath, "discord_banner.png");
-            Output.Inform("Downloading Discord banner PNG");
+            var bannerDownloadPath = GetDownloadPath(folderPath, $"{username} banner.png");
+            Output.Inform($"Downloading {username}'s banner (PNG)");
             await FileSystem.Download(bannerSrc.Replace("?size=1024", "?size=2048"), bannerDownloadPath);
-            Output.Inform("Downloading Discord banner GIF");
+            Output.Inform($"Downloading {username}'s banner (GIF)");
             await FileSystem.Download(bannerSrc.Replace("?size=1024", "?size=2048").Replace(".png", ".gif"), bannerDownloadPath.Replace(".png", ".gif"));
 
-            await page.PauseAsync();
+            // exit browser
+            await page.CloseAsync();
         }
 
         public static async Task HandleYoutube(string url, string folderPath) {
@@ -65,28 +72,39 @@ namespace Main
 
             // check if profile page or video
             if (url.Contains("watch?v=")) {
+
+                // get video title
+                var videoTitle = await page.Locator("yt-formatted-string.ytd-video-primary-info-renderer:nth-child(1)").TextContentAsync();
+
                 // download thumbnail
-                Output.Inform("Downloading YouTube video thumbnail");
+                Output.Inform($"Downloading thumbnail for '{videoTitle}'");
 
                 // get original thumbnail link
                 var videoId = url.Replace("https://", "").Replace("http://", "").Replace("www.youtube.com/watch?v=", "");
                 var downloadLink = $"https://img.youtube.com/vi/{videoId}/maxresdefault.jpg";
 
-                var downloadPath = GetDownloadPath(folderPath, "hq_yt_thumbnail.png");
+                var downloadPath = GetDownloadPath(folderPath, $"{videoTitle}.png");
                 await FileSystem.Download(downloadLink, downloadPath);
             }
             else if (url.Contains("/channel/") || url.Contains("/c/")) {
+
+                // get channel name
+                var channelName = await page.Locator("ytd-channel-name.ytd-c4-tabbed-header-renderer > div:nth-child(1) > div:nth-child(1) > yt-formatted-string:nth-child(1)").TextContentAsync();
+                
                 // download pfp
-                Output.Inform("Downloading YouTube channel profile picture");
+                Output.Inform($"Downloading {channelName}'s YouTube profile picture");
 
                 var pfp = await page.QuerySelectorAsync("#channel-header-container #img");
                 var srcAttribute = await pfp.GetAttributeAsync("src");
                 var pfpLink = srcAttribute.Replace("=s88-c-k-c0x00ffffff-no-rj", "");
 
-                var downloadPath = GetDownloadPath(folderPath, "hq_yt_pfp.png");
+                var downloadPath = GetDownloadPath(folderPath, $"{channelName} yt pfp.png");
                 await FileSystem.Download(pfpLink, downloadPath);
             }
             else Output.Inform("Unrecognized link, only video and channel links are supported");
+
+            // exit browser
+            await page.CloseAsync();
         }
 
         public static async Task HandleSoundcloud(string url, string folderPath) {
@@ -104,7 +122,13 @@ namespace Main
             // check if profile page
             var profileStats = await page.QuerySelectorAsync("article[class=infoStats]");
             if (profileStats == null) {
-                Output.Inform("Downloading Soundcloud song artwork");
+
+                // get song & artist name
+                var artistName = await page.Locator(".userBadge__usernameLink > span:nth-child(1)").TextContentAsync();
+                var songName = await page.Locator("h1.soundTitle__title > span:nth-child(1)").TextContentAsync();
+
+                // inform what we downloading
+                Output.Inform($"Downloading artwork for '{songName}' by {artistName}");
 
                 // get original image url
                 var styleAttribute = await page.Locator(".image__full").First.GetAttributeAsync("style");
@@ -113,11 +137,15 @@ namespace Main
                 var originalImageUrl = imageUrl.Replace("t500x500", "original");
 
                 // download
-                var downloadPath = GetDownloadPath(folderPath, "hq_sc_cover.png");
+                var downloadPath = GetDownloadPath(folderPath, $"{artistName} - {songName}.png");
                 await FileSystem.Download(originalImageUrl, downloadPath);
             }
             else {
-                Output.Inform("Downloading Soundcloud profile picture");
+                // get artist name
+                var artistName = page.Locator(".profileHeaderInfo__userName").TextContentAsync().Result.Replace("\n", "").Replace(" Verified", "").Trim();
+
+                // inform what we downloading
+                Output.Inform($"Downloading {artistName}'s Soundcloud profile picture");
 
                 // get original image url
                 var styleAttribute = await page.Locator(".image__noOutline > span:nth-child(1)").First.GetAttributeAsync("style");
@@ -126,13 +154,14 @@ namespace Main
                 var originalImageUrl = imageUrl.Replace("t200x200", "original");
 
                 // download
-                var downloadPath = GetDownloadPath(folderPath, "hq_sc_avatar.png");
+                var downloadPath = GetDownloadPath(folderPath, $"{artistName} sc pfp.png");
                 await FileSystem.Download(originalImageUrl, downloadPath);
             }
             
             // exit browser
             await page.CloseAsync();
         }
+        
         public static string GetDownloadPath(string folderPath, string fileName) {
             return string.IsNullOrEmpty(folderPath.Trim()) ? fileName : folderPath + (folderPath.EndsWith(Path.DirectorySeparatorChar) ? "" : Path.DirectorySeparatorChar) + fileName;
         }
