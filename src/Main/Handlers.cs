@@ -39,9 +39,9 @@ namespace Main
                 return;
             }
             var pfpDownloadPath = GetDownloadPath(folderPath, $"{username} pfp.png");
-            Output.Inform($"Downloading {SetText.Blue}{username}{SetText.ResetAll}'s profile picture (PNG)");
+            Output.Inform($"Downloading {SetText.Blue}{SetText.Bold}{username}{SetText.ResetAll}'s profile picture (PNG)");
             await FileSystem.Download(pfpSrc.Replace("?size=1024", "?size=2048"), pfpDownloadPath);
-            Output.Inform($"Downloading {SetText.Blue}{username}{SetText.ResetAll}'s profile picture (GIF)");
+            Output.Inform($"Downloading {SetText.Blue}{SetText.Bold}{username}{SetText.ResetAll}'s profile picture (GIF)");
             await FileSystem.Download(pfpSrc.Replace("?size=1024", "?size=2048").Replace(".png", ".gif"), pfpDownloadPath.Replace(".png", ".gif"));
 
             // get banner gif and png
@@ -52,9 +52,9 @@ namespace Main
                 return;
             }
             var bannerDownloadPath = GetDownloadPath(folderPath, $"{username} banner.png");
-            Output.Inform($"Downloading {SetText.Blue}{username}{SetText.ResetAll}'s banner (PNG)");
+            Output.Inform($"Downloading {SetText.Blue}{SetText.Bold}{username}{SetText.ResetAll}'s banner (PNG)");
             await FileSystem.Download(bannerSrc.Replace("?size=1024", "?size=2048"), bannerDownloadPath);
-            Output.Inform($"Downloading {SetText.Blue}{username}{SetText.ResetAll}'s banner (GIF)");
+            Output.Inform($"Downloading {SetText.Blue}{SetText.Bold}{username}{SetText.ResetAll}'s banner (GIF)");
             await FileSystem.Download(bannerSrc.Replace("?size=1024", "?size=2048").Replace(".png", ".gif"), bannerDownloadPath.Replace(".png", ".gif"));
 
             // exit browser
@@ -83,7 +83,7 @@ namespace Main
                 var videoTitle = await page.Locator("yt-formatted-string.ytd-video-primary-info-renderer:nth-child(1)").TextContentAsync();
 
                 // download thumbnail
-                Output.Inform($"Downloading thumbnail for '{SetText.Blue}{videoTitle}{SetText.ResetAll}'");
+                Output.Inform($"Downloading thumbnail for '{SetText.Blue}{SetText.Bold}{videoTitle}{SetText.ResetAll}'");
 
                 // get original thumbnail link
                 var videoId = url.Replace("https://", "").Replace("http://", "").Replace("www.youtube.com/watch?v=", "");
@@ -98,7 +98,7 @@ namespace Main
                 var channelName = await page.Locator("ytd-channel-name.ytd-c4-tabbed-header-renderer > div:nth-child(1) > div:nth-child(1) > yt-formatted-string:nth-child(1)").TextContentAsync();
                 
                 // download pfp
-                Output.Inform($"Downloading {SetText.Blue}{channelName}{SetText.ResetAll}'s YouTube profile picture");
+                Output.Inform($"Downloading {SetText.Blue}{SetText.Bold}{channelName}{SetText.ResetAll}'s YouTube profile picture");
 
                 var pfp = await page.QuerySelectorAsync("#channel-header-container #img");
                 var srcAttribute = await pfp.GetAttributeAsync("src");
@@ -134,7 +134,7 @@ namespace Main
                 var songName = await page.Locator("h1.soundTitle__title > span:nth-child(1)").TextContentAsync();
 
                 // inform what we downloading
-                Output.Inform($"Downloading artwork for '{SetText.Blue}{songName}{SetText.ResetAll}' by {SetText.Blue}{artistName}");
+                Output.Inform($"Downloading artwork for '{SetText.Blue}{SetText.Bold}{songName}{SetText.ResetAll}' by {SetText.Blue}{SetText.Bold}{artistName}");
 
                 // get original image url
                 var styleAttribute = await page.Locator(".image__full").First.GetAttributeAsync("style");
@@ -151,7 +151,7 @@ namespace Main
                 var artistName = page.Locator(".profileHeaderInfo__userName").TextContentAsync().Result.Replace("\n", "").Replace(" Verified", "").Trim();
 
                 // inform what we downloading
-                Output.Inform($"Downloading {SetText.Blue}{artistName}{SetText.ResetAll}'s Soundcloud profile picture");
+                Output.Inform($"Downloading {SetText.Blue}{SetText.Bold}{artistName}{SetText.ResetAll}'s Soundcloud profile picture");
 
                 // get original image url
                 var styleAttribute = await page.Locator(".image__noOutline > span:nth-child(1)").First.GetAttributeAsync("style");

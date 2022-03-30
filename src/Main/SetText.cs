@@ -19,7 +19,7 @@ namespace Main
         public static string LightCyan = "\x1b[96m";
         public static string LightWhite = "\x1b[97m";
         public static string ResetAll = "\x1b[0m";
-        public static string Bold = "\x1b[1m";
+        public static string Bold = Environment.OSVersion.Platform != PlatformID.Unix ? "" : "\x1b[1m";
         public static string BoldOff = "\x1b[21m";
         public static string Underline = "\x1b[4m";
         public static string UnderlineOff = "\x1b[24m";
