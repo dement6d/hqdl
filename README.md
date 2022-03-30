@@ -1,18 +1,19 @@
 <h1 align="center">High Quality Download</h1>
+<p align="center">Simple and easy to use tool for downloading original quality images from various social medias</p>
+<p align="center"><a href="https://github.com/microsoft/playwright-dotnet"><img src="https://img.shields.io/badge/powered%20by-playwright-0077a3"/></a></p>
 
 ## How to use
 
-Run the program and paste in a URL or Discord User ID, press enter, type a path to where you want the files to be saved or leave it empty to have them downloaded to the same folder as the executable
+Run the program and paste in a URL or Discord User ID, press enter
+
+If you didn't set a default download path by creating a 'config.txt' file in the same directory as the executable, type a path to where you want the files to be saved or leave it empty to have them downloaded to the same folder as the executable
+
+### Helpful tip
+Use 'desktop' at the beginning of your download path if you want the items to be downloaded to your desktop or use 'desktop/folder' to have them downloaded inside a folder on your desktop. If the folder doesn't exist, it will be created.
 
 ## Examples
 
 <p align="center">
-  <img width="300" align="center" src="https://user-images.githubusercontent.com/93228501/160682032-db6bea3b-cd57-4482-a972-c01f31d2dac7.png"/>
-  <img width="300" align="center" src="https://user-images.githubusercontent.com/93228501/160682334-92c10305-749d-449c-924b-86ee0de9dc00.png"/>
-  <img width="300" align="center" src="https://user-images.githubusercontent.com/93228501/160683085-0ec3f961-faa8-458a-b986-328c442a15c5.png"/>
-</p>
-<p align="">
-</p>
-<p align="center">
-  <img src="https://user-images.githubusercontent.com/93228501/160683242-7fe11216-c53f-48dc-a9e1-0a9a99e5408b.png"/>
+  <img height="200" align="center" src="https://user-images.githubusercontent.com/93228501/160738873-692fa6af-d923-4d1b-871c-33787a7f29ec.png"/>
+  <img height="200" align="center" src="https://user-images.githubusercontent.com/93228501/160738270-edbff342-7b44-450d-afc4-f3513e7dfd85.png"/>
 </p>
