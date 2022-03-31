@@ -60,7 +60,7 @@ namespace Main
                 for (int i = 0; i < downloads.Count; i++)
                 {
                     var downloadLink = downloads[i].GetAttributeAsync("href").Result.Replace("&dl=1", "");
-                    await FileSystem.Download(downloadLink, GetDownloadPath(folderPath, $"{username} {new Random().Next(10000, 99999)} {i}." + (downloadLink.Contains("dst-jpg") ? ".png" : ".mp4")));
+                    await FileSystem.Download(downloadLink, GetDownloadPath(folderPath, $"{username} slide {i} {new Random().Next(100, 999)}." + (downloadLink.Contains("dst-jpg") ? ".png" : ".mp4")));
                 }
 
                 //exit
