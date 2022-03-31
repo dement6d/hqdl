@@ -12,7 +12,7 @@ string? folderPath = "";
 // check if default download path exists
 if (File.Exists("config.txt")) folderPath = File.ReadAllLinesAsync("config.txt").Result[0];
 else {
-    folderPath = Input.GetInput($"Folder to save in", new[] {   new Input.AdditionalInfo{ info = "Set a default download path by creating a 'config.txt' file in the same location as the executable and writing the path on the first line", error = false },
+    folderPath = Input.GetInput($"the path to save to", new[] {   new Input.AdditionalInfo{ info = "Set a default download path by creating a 'config.txt' file in the same location as the executable and writing the path on the first line", error = false },
                                                                 new Input.AdditionalInfo { info = $"Leave empty to save in '{Environment.CurrentDirectory}'", error = false }});
 }
 
