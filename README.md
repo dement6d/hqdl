@@ -11,6 +11,13 @@
 <p align="center"><a href="https://github.com/microsoft/playwright-dotnet"><img src="https://img.shields.io/badge/powered%20by-playwright-0077a3"/></a></p>
 
 
+# Capabilities
+
+What can it download? Here's a list:
+- Instagram posts (both videos & images)
+- Discord profile picture & banners (gif & png)
+- YouTube thumbnails & channel profile pictures
+- Soundcloud artwork & artist profile pictures
 
 # How to use
 
