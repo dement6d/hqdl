@@ -1,7 +1,9 @@
 builds
 *.png
 *.gif
+*.mp4
 src/bin/
 src/obj/
 .vscode
 src/.vscode
+src/config.txt
