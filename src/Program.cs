@@ -10,11 +10,12 @@ url = Input.GetUrl();
 // get download path
 string? folderPath = "";
 // check if default download path exists
-if (File.Exists("config.txt")) folderPath = File.ReadAllLinesAsync("config.txt").Result[0];
-else {
-    folderPath = Input.GetInput($"the path to save to", new[] {   new Input.AdditionalInfo{ info = "Set a default download path by creating a 'config.txt' file in the same location as the executable and writing the path on the first line", error = false },
-                                                                new Input.AdditionalInfo { info = $"Leave empty to save in '{Environment.CurrentDirectory}'", error = false }});
-}
+if (File.Exists("config.txt")) try { folderPath = File.ReadAllLinesAsync("config.txt").Result[0]; } catch {}
+if (string.IsNullOrEmpty(folderPath))
+    folderPath = Input.GetInput($"the path to save to", new[] 
+    {   new Input.AdditionalInfo{ info = "Set a default download path by creating a 'config.txt' file in the same location as the executable and writing the path on the first line", error = false },
+        new Input.AdditionalInfo { info = $"Leave empty to save in '{Environment.CurrentDirectory}'", error = false }});
+
 
 // fix up the path
 var downloadFolder = string.IsNullOrEmpty(folderPath.Trim()) ? "" : folderPath + (folderPath.EndsWith(Path.DirectorySeparatorChar) ? "" : Path.DirectorySeparatorChar);
@@ -34,14 +35,17 @@ Console.Title = "High Quality Downloader - Working";
 List<string> urls = urls = url.Split(" & ", StringSplitOptions.RemoveEmptyEntries).ToList();
 foreach (string entry in urls) {
     if (urls.Count > 1) Output.Inform($"Handling entry '{SetText.Cyan}{entry}{SetText.ResetAll}'");
+
     // soundcloud
     if (entry.Contains("soundcloud.com")) await Handlers.HandleSoundcloud(entry, downloadFolder);
+    // instagram
+    else if (entry.Contains("instagram.com") || entry.StartsWith('@')) await Handlers.HandleInstagram(entry, downloadFolder);
     // youtube
     else if (entry.Contains("youtube.com") || entry.Contains("youtu.be")) await Handlers.HandleYoutube(entry, downloadFolder);
     // discord pfp
     else if (entry.Trim().Length == 18 && long.TryParse(entry.Trim(), out long userId)) await Handlers.HandleDiscord(userId, downloadFolder);
     // unsupported
-    else Output.Inform("Website not supported");
+    else Output.Inform($"'{SetText.Cyan}{entry}{SetText.ResetAll}' is not a valid entry");
 }
 
 // dont exit instantly

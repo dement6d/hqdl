@@ -6,6 +6,63 @@ namespace Main
 {
     public class Handlers
     {
+        public static async Task HandleInstagram(string url, string folderPath) {
+
+            // go to url
+            using var playwright = await Playwright.CreateAsync();
+            await using var browser = await playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions { Headless = false });
+            var page = await browser.NewPageAsync();
+
+            if (url.StartsWith('@')) {
+                string at = url.Replace("@", "");
+
+                // goto instabig
+                await page.GotoAsync($"https://instabig.net/fullsize/{at}", new PageGotoOptions{
+                    WaitUntil = WaitUntilState.NetworkIdle
+                });
+                
+                // get pfp
+                var pfpSrc = await page.Locator("#fullsizeLink").GetAttributeAsync("href");
+
+                // download
+                Output.Inform($"Downloading {SetText.Blue}{SetText.Bold}{at}{SetText.ResetAll}'s Instagram profile picture");
+                await FileSystem.Download(pfpSrc, GetDownloadPath(folderPath, $"{at} insta pfp.png"));
+                return;
+            }
+
+            // get username
+            await page.GotoAsync(url, new PageGotoOptions{
+                WaitUntil = WaitUntilState.NetworkIdle
+            });
+            string? username = null;
+            try { username = await page.Locator(".e1e1d > div:nth-child(1) > a:nth-child(1)").TextContentAsync(new LocatorTextContentOptions { Timeout = 3000 }); } catch {}
+            if (string.IsNullOrEmpty(username)) username = "unknown";
+
+            if (url.Contains("/p/")) {
+
+                // goto page
+                await page.GotoAsync("https://igdownloader.com/", new PageGotoOptions{
+                    WaitUntil = WaitUntilState.NetworkIdle
+                });
+
+                // search for post
+                await page.TypeAsync(".ig[placeholder=\"ex: https://www.instagram.com/p/CBBp48HA8u7/\"]", url);
+                await page.PressAsync(".ig[placeholder=\"ex: https://www.instagram.com/p/CBBp48HA8u7/\"]", "Enter");
+                await page.WaitForRequestFinishedAsync();
+
+                // get image src
+                var downloads = await page.QuerySelectorAllAsync("a[class=download-button]");
+
+                Output.Inform($"Downloading {SetText.Blue}{SetText.Bold}{username}{SetText.ResetAll}'s Instagram post");
+                for (int i = 0; i < downloads.Count; i++)
+                {
+                    var downloadLink = downloads[i].GetAttributeAsync("href").Result.Replace("&dl=1", "");
+                    await FileSystem.Download(downloadLink, GetDownloadPath(folderPath, $"{username} {new Random().Next(10000, 99999)}." + (downloadLink.Contains("dst-jpg") ? ".png" : ".mp4")));
+                }
+                return;
+            }
+
+        }
         public static async Task HandleDiscord(long userId, string folderPath) {
             // go to url
             using var playwright = await Playwright.CreateAsync();
