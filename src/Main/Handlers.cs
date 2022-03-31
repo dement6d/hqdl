@@ -62,6 +62,8 @@ namespace Main
                 return;
             }
 
+            Output.Error("Action not supported");
+            return;
         }
         public static async Task HandleDiscord(long userId, string folderPath) {
             // go to url
