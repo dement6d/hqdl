@@ -38,7 +38,7 @@ namespace Main
                 WaitUntil = WaitUntilState.NetworkIdle
             });
             string? username = null;
-            try { username = await page.Locator(".e1e1d > div:nth-child(1) > a:nth-child(1)").TextContentAsync(new LocatorTextContentOptions { Timeout = 2000 }); } catch {}
+            try { username = await page.Locator(".e1e1d > div:nth-child(1) > a:nth-child(1)").TextContentAsync(new LocatorTextContentOptions { Timeout = 1000 }); } catch {}
             if (string.IsNullOrEmpty(username)) username = "unknown";
 
             if (url.Contains("/p/")) {
