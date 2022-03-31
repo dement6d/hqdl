@@ -27,6 +27,9 @@ namespace Main
                 // download
                 Output.Inform($"Downloading {SetText.Blue}{SetText.Bold}{at}{SetText.ResetAll}'s Instagram profile picture");
                 await FileSystem.Download(pfpSrc, GetDownloadPath(folderPath, $"{at} insta pfp.png"));
+                
+                //exit
+                await page.CloseAsync();
                 return;
             }
 
@@ -35,7 +38,7 @@ namespace Main
                 WaitUntil = WaitUntilState.NetworkIdle
             });
             string? username = null;
-            try { username = await page.Locator(".e1e1d > div:nth-child(1) > a:nth-child(1)").TextContentAsync(new LocatorTextContentOptions { Timeout = 3000 }); } catch {}
+            try { username = await page.Locator(".e1e1d > div:nth-child(1) > a:nth-child(1)").TextContentAsync(new LocatorTextContentOptions { Timeout = 2000 }); } catch {}
             if (string.IsNullOrEmpty(username)) username = "unknown";
 
             if (url.Contains("/p/")) {
@@ -57,11 +60,16 @@ namespace Main
                 for (int i = 0; i < downloads.Count; i++)
                 {
                     var downloadLink = downloads[i].GetAttributeAsync("href").Result.Replace("&dl=1", "");
-                    await FileSystem.Download(downloadLink, GetDownloadPath(folderPath, $"{username} {new Random().Next(10000, 99999)}." + (downloadLink.Contains("dst-jpg") ? ".png" : ".mp4")));
+                    await FileSystem.Download(downloadLink, GetDownloadPath(folderPath, $"{username} {new Random().Next(10000, 99999)} {i}." + (downloadLink.Contains("dst-jpg") ? ".png" : ".mp4")));
                 }
+
+                //exit
+                await page.CloseAsync();
                 return;
             }
 
+            //exit
+            await page.CloseAsync();
             Output.Error("Action not supported");
             return;
         }
