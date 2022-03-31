@@ -236,7 +236,8 @@ namespace Main
         }
         
         public static string GetDownloadPath(string folderPath, string fileName) {
-            return string.IsNullOrEmpty(folderPath.Trim()) ? fileName : folderPath + (folderPath.EndsWith(Path.DirectorySeparatorChar) ? "" : Path.DirectorySeparatorChar) + fileName;
+            System.Text.RegularExpressions.Regex pattern = new System.Text.RegularExpressions.Regex("[\\/:*?\"<>|]");
+            return string.IsNullOrEmpty(folderPath.Trim()) ? fileName : folderPath + (folderPath.EndsWith(Path.DirectorySeparatorChar) ? "" : Path.DirectorySeparatorChar) + pattern.Replace(fileName, "-");
         }
     }
 }
