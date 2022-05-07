@@ -100,29 +100,56 @@ namespace Main
 
             // get pfp gif and png
             string? pfpSrc = null;
-            try { pfpSrc = await page.Locator("img >> nth=0").GetAttributeAsync("src"); }
+            try { pfpSrc = (await page.Locator("img >> nth=0").GetAttributeAsync("src")).Replace("?size=1024", "?size=2048"); }
             catch {
                 Output.Error("Failed to get User profile, keep in mind that Server IDs aren't supported");
                 return;
             }
-            var pfpDownloadPath = GetDownloadPath(folderPath, $"{username} pfp.png");
-            Output.Inform($"Downloading {SetText.Blue}{SetText.Bold}{username}{SetText.ResetAll}'s profile picture (PNG)");
-            await FileSystem.Download(pfpSrc.Replace("?size=1024", "?size=2048"), pfpDownloadPath);
-            Output.Inform($"Downloading {SetText.Blue}{SetText.Bold}{username}{SetText.ResetAll}'s profile picture (GIF)");
-            await FileSystem.Download(pfpSrc.Replace("?size=1024", "?size=2048").Replace(".png", ".gif"), pfpDownloadPath.Replace(".png", ".gif"));
 
-            // get banner gif and png
+            // get duplicate file counts
+            int pfpPngDuplicates = 0;
+            int pfpGifDuplicates = 0;
+            int bannerPngDuplicates = 0;
+            int bannerGifDuplicates = 0;
+            foreach (string file in Directory.GetFiles(folderPath)) {
+                if (file.Contains($"{username} pfp") && file.Contains("png")) pfpPngDuplicates++;
+                if (file.Contains($"{username} pfp") && file.Contains("gif")) pfpGifDuplicates++;
+                if (file.Contains($"{username} banner") && file.Contains("png")) bannerPngDuplicates++;
+                if (file.Contains($"{username} banner") && file.Contains("gif")) bannerGifDuplicates++;
+            }
+
+            // set download path for pfps
+            var pfpPngPath = GetDownloadPath(folderPath, pfpPngDuplicates == 0 ? $"{username} pfp.png" : $"{username} pfp ({pfpPngDuplicates}).png");
+            var pfpGifPath = GetDownloadPath(folderPath, pfpGifDuplicates == 0 ? $"{username} pfp.gif" : $"{username} pfp ({pfpGifDuplicates}).gif");
+
+            // download pfp gif and png
+            Output.Inform($"Downloading {SetText.Blue}{SetText.Bold}{username}{SetText.ResetAll}'s profile picture (PNG)");
+            await FileSystem.Download(pfpSrc, pfpPngPath);
+            Output.Inform($"Downloading {SetText.Blue}{SetText.Bold}{username}{SetText.ResetAll}'s profile picture (GIF)");
+            await FileSystem.Download(pfpSrc.Replace(".png", ".gif"), pfpGifPath);
+
+            // get banner source or return if user has no banner
             string? bannerSrc = null;
-            try { bannerSrc = await page.QuerySelectorAsync("img[alt=\"Banner\"]").Result.GetAttributeAsync("src"); }
+            try { bannerSrc = (await page.QuerySelectorAsync("img[alt=\"Banner\"]").Result.GetAttributeAsync("src")).Replace("?size=1024", "?size=2048"); }
             catch {
                 Output.Error("User doesn't have a banner");
                 return;
             }
-            var bannerDownloadPath = GetDownloadPath(folderPath, $"{username} banner.png");
+
+            // set download path for banners
+            var bannerPngPath = GetDownloadPath(
+                folderPath,
+                bannerPngDuplicates == 0 ? $"{username} banner.png" : $"{username} banner ({bannerPngDuplicates}).png"
+            );
+            var bannerGifPath = GetDownloadPath(
+                folderPath,
+                bannerGifDuplicates == 0 ? $"{username} banner.png" : $"{username} banner ({bannerGifDuplicates}).png"
+            );
+
             Output.Inform($"Downloading {SetText.Blue}{SetText.Bold}{username}{SetText.ResetAll}'s banner (PNG)");
-            await FileSystem.Download(bannerSrc.Replace("?size=1024", "?size=2048"), bannerDownloadPath);
+            await FileSystem.Download(bannerSrc, bannerPngPath);
             Output.Inform($"Downloading {SetText.Blue}{SetText.Bold}{username}{SetText.ResetAll}'s banner (GIF)");
-            await FileSystem.Download(bannerSrc.Replace("?size=1024", "?size=2048").Replace(".png", ".gif"), bannerDownloadPath.Replace(".png", ".gif"));
+            await FileSystem.Download(bannerSrc.Replace(".png", ".gif"), bannerGifPath);
 
             // exit browser
             await page.CloseAsync();
