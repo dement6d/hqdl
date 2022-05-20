@@ -143,7 +143,7 @@ namespace Main
             );
             var bannerGifPath = GetDownloadPath(
                 folderPath,
-                bannerGifDuplicates == 0 ? $"{username} banner.png" : $"{username} banner ({bannerGifDuplicates}).png"
+                bannerGifDuplicates == 0 ? $"{username} banner.gif" : $"{username} banner ({bannerGifDuplicates}).gif"
             );
 
             Output.Inform($"Downloading {SetText.Blue}{SetText.Bold}{username}{SetText.ResetAll}'s banner (PNG)");

@@ -1,14 +1,15 @@
 ﻿using Main;
 using IO;
+using CommandLineParser.Arguments;
 
-Initialize();
+Initialize(args);
 
 // get url
-string? url = "";
-url = Input.GetUrl();
+string? url = Args.values.Value;
+if (string.IsNullOrEmpty(url)) url = Input.GetUrl();
 
 // get download path
-string? folderPath = "";
+string? folderPath = Args.output.Value.FullName;
 // check if default download path exists
 if (File.Exists("config.txt")) try { folderPath = File.ReadAllLinesAsync("config.txt").Result[0]; } catch {}
 if (string.IsNullOrEmpty(folderPath))
@@ -54,7 +55,7 @@ Output.Inform("Press any key to exit");
 Console.ReadKey();
 SetText.DisplayCursor(true);
 
-static void Initialize() {
+static void Initialize(string[] args) {
 
     // set window title
     Console.Title = "High Quality Downloader";
@@ -71,6 +72,8 @@ static void Initialize() {
         Fix.Windows.FixCmd();
     }
 
+    HandleArgs(args);
+
     // disable cursor
     SetText.DisplayCursor(false);
 
@@ -81,4 +84,11 @@ static void Initialize() {
         Output.Error($"Failed to install playwright");
         Environment.Exit(exitCode);
     }
+}
+
+static void HandleArgs(string[] args) {
+    CommandLineParser.CommandLineParser parser = new CommandLineParser.CommandLineParser();
+    parser.Arguments.Add(Args.output);
+    parser.Arguments.Add(Args.values);
+    parser.ParseCommandLine(args); 
 }
