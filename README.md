@@ -23,6 +23,8 @@ What can it download? Here's a list:
 
 Run the program and paste in a URL or Discord User ID, press enter
 
+Optionally, run the program with the `-o` & `-v` arguments. For help, run `hqdl --help`
+
 If you didn't set a default download path by creating a 'config.txt' file in the same directory as the executable, type a path to where you want the files to be saved or leave it empty to have them downloaded to the same folder as the executable
 
 ### Helpful tip
